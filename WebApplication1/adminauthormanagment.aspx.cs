@@ -13,49 +13,44 @@ namespace WebApplication1
         {
             GridView1.DataBind();
         }
-
         protected void Button2_Click(object sender, EventArgs e)
         {
-            if (checkIfAuthorExists())
+            if (CheckIfAuthorExists())
             {
                 Response.Write("<script>alert('Autor z takim ID już istnieje. Nie możesz dodać kolejnego autora z takim samym ID');</script>");
             }
             else
             {
-                addNewAuthor();
+                AddNewAuthor();
             }
         }
-
         protected void Button3_Click(object sender, EventArgs e)
         {
-            if (checkIfAuthorExists())
+            if (CheckIfAuthorExists())
             {
-                updateAuthor();
+                UpdateAuthor();
             }
             else
             {
                 Response.Write("<script>alert('Autor z takim ID nie istnieje');</script>");
             }
         }
-
         protected void Button4_Click(object sender, EventArgs e)
         {
-            if (checkIfAuthorExists())
+            if (CheckIfAuthorExists())
             {
-                deleteAuthor();
+                DeleteAuthor();
             }
             else
             {
                 Response.Write("<script>alert('Autor z takim ID nie istnieje');</script>");
             }
         }
-
         protected void Button1_Click(object sender, EventArgs e)
         {
-            getAuthorByID();
+            GetAuthorByID();
         }
-
-        void getAuthorByID()
+        void GetAuthorByID()
         {
             try
             {
@@ -66,12 +61,9 @@ namespace WebApplication1
                 }
 
                 SqlCommand cmd = new SqlCommand("SELECT * FROM author_master_tbl WHERE author_id='" + TextBox3.Text.Trim() + "'", con);
-
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
-
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-
                 if (dt.Rows.Count >= 1)
                 {
                     TextBox4.Text = dt.Rows[0][1].ToString();
@@ -80,16 +72,13 @@ namespace WebApplication1
                 {
                     Response.Write("<script>alert('Nieprawidłowe ID Autora');</script>");
                 }
-
             }
             catch (Exception ex)
             {
-
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
-
             }
         }
-        void deleteAuthor()
+        void DeleteAuthor()
         {
             try
             {
@@ -98,13 +87,11 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("DELETE from author_master_tbl WHERE author_id ='" + TextBox3.Text.Trim() + "'", con);
-
                 cmd.ExecuteNonQuery();
                 con.Close();
                 Response.Write("<script>alert('Autor został usunięty');</script>");
-                clearForm();
+                ClearForm();
                 GridView1.DataBind();
             }
             catch (Exception ex)
@@ -112,8 +99,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        void updateAuthor()
+        void UpdateAuthor()
         {
             try
             {
@@ -129,19 +115,15 @@ namespace WebApplication1
                 con.Close();
 
                 Response.Write("<script>alert('Dane autora zostały zaktualizowane');</script>");
-
-                clearForm();
-
+                ClearForm();
                 GridView1.DataBind();
-
             }
             catch (Exception ex)
             {
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        void addNewAuthor()
+        void AddNewAuthor()
         {
             try
             {
@@ -150,26 +132,21 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("INSERT INTO author_master_tbl(author_id,author_name) " + "values(@author_id,@author_name)", con);
-
                 cmd.Parameters.AddWithValue("@author_id", TextBox3.Text.Trim());
                 cmd.Parameters.AddWithValue("@author_name", TextBox4.Text.Trim());
                 cmd.ExecuteNonQuery();
                 con.Close();
                 Response.Write("<script>alert('Autor został dodany');</script>");
-                clearForm();
-
+                ClearForm();
                 GridView1.DataBind();
-
             }
             catch (Exception ex)
             {
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        bool checkIfAuthorExists()
+        bool CheckIfAuthorExists()
         {
             try
             {
@@ -182,7 +159,6 @@ namespace WebApplication1
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-
                 if (dt.Rows.Count >= 1)
                 {
                     return true;
@@ -191,17 +167,14 @@ namespace WebApplication1
                 {
                     return false;
                 }
-
             }
             catch (Exception ex)
             {
-
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
                 return false;
             }
         }
-
-        void clearForm()
+        void ClearForm()
         {
             TextBox3.Text = "";
             TextBox4.Text = "";

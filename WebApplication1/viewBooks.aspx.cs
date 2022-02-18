@@ -15,11 +15,9 @@ namespace WebApplication1
         {
 
         }
-
         protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             Button reservation = null;
-
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 reservation = e.Row.FindControl("Button1") as Button;
@@ -34,19 +32,16 @@ namespace WebApplication1
                 }
             }
         }
-
         protected void Button1_Click(object sender, EventArgs e)
         {
-
             var button = (Button)sender;
             var row = (GridViewRow)button.NamingContainer;
             bookID = row.Cells[0].Text.Trim();
-            Label label1 = row.FindControl("Label1") as Label;
+            var label1 = row.FindControl("Label1") as Label;
             var bookTitle = label1.Text.Trim();
-
-            if (checkIfBookExist())
+            if (CheckIfBookExist())
             {
-                if (checkIfIssueEntryExist())
+                if (CheckIfIssueEntryExist())
                 {
                     Response.Write("<script>alert('Ten użytkownik posiada już tę książkę');</script>");
                 }
@@ -59,15 +54,13 @@ namespace WebApplication1
                         {
                             con.Open();
                         }
-
                         SqlCommand cmd = new SqlCommand("SELECT full_name,member_id FROM member_master_tbl WHERE member_id='" + Session["username"].ToString() + "'", con);
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         DataTable dt = new DataTable();
                         da.Fill(dt);
 
-                        string memberID = dt.Rows[0]["member_id"].ToString();
-                        string memberFullName = dt.Rows[0]["full_name"].ToString();
-
+                        var memberID = dt.Rows[0]["member_id"].ToString();
+                        var memberFullName = dt.Rows[0]["full_name"].ToString();
                         var startOfBooking = DateTime.Now.ToString();
                         var endofBooking = DateTime.Now.AddDays(3).ToString();
 
@@ -83,7 +76,6 @@ namespace WebApplication1
                         cmd = new SqlCommand("UPDATE book_master_tbl SET current_stock = current_stock -1 WHERE book_id ='" + bookID + "'", con);
                         cmd.ExecuteNonQuery();
                         con.Close();
-
                         Response.Write("<script>alert('Książka została zarezerwowana');</script>");
                         GridView1.DataBind();
                     }
@@ -98,7 +90,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('Nieprawidłowe ID użytkownika lub książki');</script>");
             }
         }
-        bool checkIfBookExist()
+        bool CheckIfBookExist()
         {
             try
             {
@@ -107,7 +99,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM book_master_tbl WHERE book_id='" + bookID + "' AND current_stock > 0", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -115,7 +106,6 @@ namespace WebApplication1
                 if (dt.Rows.Count >= 1)
                 {
                     return true;
-
                 }
                 else
                 {
@@ -128,8 +118,7 @@ namespace WebApplication1
                 return false;
             }
         }
-
-        bool checkIfIssueEntryExist()
+        bool CheckIfIssueEntryExist()
         {
             try
             {
@@ -138,7 +127,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM book_reservation_tbl WHERE member_id='" + Session["username"].ToString() + "' AND book_id='" + bookID + "'", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();

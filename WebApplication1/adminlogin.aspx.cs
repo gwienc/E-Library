@@ -13,7 +13,6 @@ namespace WebApplication1
         {
 
         }
-
         protected void Button1_Click(object sender, EventArgs e)
         {
             try
@@ -23,7 +22,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM admin_login_tbl WHERE username='" + TextBox1.Text.Trim() + "' AND password ='" + TextBox2.Text.Trim() + "'", con);
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)

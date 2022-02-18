@@ -14,28 +14,26 @@ namespace WebApplication1
             GridView1.DataBind();
             GridView2.DataBind();
         }
-
         protected void Button1_Click(object sender, EventArgs e)
         {
-            getNames();
+            GetNames();
         }
-
         protected void Button2_Click(object sender, EventArgs e)
         {
-            if (checkIfBookExist() && checkIfMemberExist())
+            if (CheckIfBookExist() && CheckIfMemberExist())
             {
-                if (checkIfIssueEntryExist())
+                if (CheckIfIssueEntryExist())
                 {
                     Response.Write("<script>alert('Ten użytkownik posiada już tę książkę');</script>");
                 }
-                else if (checkIfReservationExist())
+                else if (CheckIfReservationExist())
                 {
-                    deleteReservedBook();
-                    issueBook();
+                    DeleteReservedBook();
+                    IssueBook();
                 }
                 else
                 {
-                    issueBook();
+                    IssueBook();
                 }
             }
             else
@@ -43,14 +41,13 @@ namespace WebApplication1
                 Response.Write("<script>alert('Nieprawidłowe ID użytkownika lub książki');</script>");
             }
         }
-
         protected void Button3_Click(object sender, EventArgs e)
         {
-            if (checkIfBookExist() && checkIfMemberExist())
+            if (CheckIfBookExist() && CheckIfMemberExist())
             {
-                if (checkIfIssueEntryExist())
+                if (CheckIfIssueEntryExist())
                 {
-                    returnBook();
+                    ReturnBook();
                 }
                 else
                 {
@@ -62,8 +59,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('Nieprawidłowe ID ksiązki lub użytkownika');</script>");
             }
         }
-
-        void returnBook()
+        void ReturnBook()
         {
             try
             {
@@ -72,7 +68,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("DELETE FROM book_issue_tbl WHERE book_id ='" + TextBox3.Text.Trim() + "' AND member_id='" + TextBox4.Text.Trim() + "'", con);
                 int result = cmd.ExecuteNonQuery();
                 if (result > 0)
@@ -94,8 +89,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        void issueBook()
+        void IssueBook()
         {
             try
             {
@@ -106,14 +100,12 @@ namespace WebApplication1
                 }
                 SqlCommand cmd = new SqlCommand("INSERT INTO book_issue_tbl(member_id,member_name,book_id,book_name,issue_date,due_date) " +
                     "values(@member_id,@member_name,@book_id,@book_name,@issue_date,@due_date)", con);
-
                 cmd.Parameters.AddWithValue("@member_id", TextBox4.Text.Trim());
                 cmd.Parameters.AddWithValue("@member_name", TextBox1.Text.Trim());
                 cmd.Parameters.AddWithValue("@book_id", TextBox3.Text.Trim());
                 cmd.Parameters.AddWithValue("@book_name", TextBox2.Text.Trim());
                 cmd.Parameters.AddWithValue("@issue_date", TextBox5.Text.Trim());
                 cmd.Parameters.AddWithValue("@due_date", TextBox6.Text.Trim());
-
                 cmd.ExecuteNonQuery();
                 cmd = new SqlCommand("UPDATE book_master_tbl SET current_stock = current_stock -1 WHERE book_id ='" + TextBox3.Text.Trim() + "'", con);
                 cmd.ExecuteNonQuery();
@@ -126,8 +118,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        bool checkIfMemberExist()
+        bool CheckIfMemberExist()
         {
             try
             {
@@ -136,7 +127,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM member_master_tbl WHERE member_id='" + TextBox4.Text.Trim() + "'", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -156,7 +146,7 @@ namespace WebApplication1
                 return false;
             }
         }
-        bool checkIfIssueEntryExist()
+        bool CheckIfIssueEntryExist()
         {
             try
             {
@@ -165,7 +155,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM book_issue_tbl WHERE member_id='" + TextBox4.Text.Trim() + "' AND book_id='" + TextBox3.Text.Trim() + "'", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -185,8 +174,7 @@ namespace WebApplication1
                 return false;
             }
         }
-
-        bool checkIfBookExist()
+        bool CheckIfBookExist()
         {
             try
             {
@@ -195,7 +183,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM book_master_tbl WHERE book_id='" + TextBox3.Text.Trim() + "' AND current_stock > 0", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -215,7 +202,7 @@ namespace WebApplication1
                 return false;
             }
         }
-        bool checkIfReservationExist()
+        bool CheckIfReservationExist()
         {
             try
             {
@@ -243,8 +230,7 @@ namespace WebApplication1
                 return false;
             }
         }
-
-        void deleteReservedBook()
+        void DeleteReservedBook()
         {
             try
             {
@@ -253,7 +239,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("DELETE FROM book_reservation_tbl WHERE member_id = '" + TextBox4.Text.Trim() + "' AND book_id = '" + TextBox3.Text.Trim() + "'", con);
                 cmd.ExecuteNonQuery();
                 cmd = new SqlCommand("UPDATE book_master_tbl SET current_stock = current_stock +1 WHERE book_id = '" + TextBox3.Text.Trim() + "'", con);
@@ -266,8 +251,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        void getNames()
+        void GetNames()
         {
             try
             {
@@ -276,7 +260,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT book_name FROM book_master_tbl WHERE book_id='" + TextBox3.Text.Trim() + "'", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -289,7 +272,6 @@ namespace WebApplication1
                 {
                     Response.Write("<script>alert('Nieprawidłowe ID książki');</script>");
                 }
-
                 cmd = new SqlCommand("SELECT full_name FROM member_master_tbl WHERE member_id='" + TextBox4.Text.Trim() + "'", con);
                 da = new SqlDataAdapter(cmd);
                 dt = new DataTable();
@@ -308,15 +290,14 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
         protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             try
             {
                 if (e.Row.RowType == DataControlRowType.DataRow)
                 {
-                    DateTime dt = Convert.ToDateTime(e.Row.Cells[5].Text);
-                    DateTime today = DateTime.Today;
+                    var dt = Convert.ToDateTime(e.Row.Cells[5].Text);
+                    var today = DateTime.Today;
                     if (today > dt)
                     {
                         e.Row.BackColor = System.Drawing.Color.PaleVioletRed;

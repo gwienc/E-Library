@@ -11,47 +11,40 @@ namespace WebApplication1
         string strcon = ConfigurationManager.ConnectionStrings["con"].ConnectionString;
         static string globalFilepath;
         static int globalActualStock, globalCurrentStock, globalIssuedBooks;
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                fillAuthorPublisherValues();
+                FillAuthorPublisherValues();
             }
-
             GridView1.DataBind();
         }
-
         protected void Button4_Click(object sender, EventArgs e)
         {
-            getBookByID();
+            GetBookByID();
         }
-
         protected void Button2_Click(object sender, EventArgs e)
         {
-            if (checkIfBookExists())
+            if (CheckIfBookExists())
             {
                 Response.Write("<script>alert('Książka z takim ID już istnieje. Wprowadź inne ID');</script>");
             }
             else
             {
-                addNewBook();
+                AddNewBook();
             }
         }
-
         protected void Button1_Click(object sender, EventArgs e)
         {
-            updateBookByID();
+            UpdateBookByID();
         }
-
         protected void Button3_Click(object sender, EventArgs e)
         {
-            deleteBookByID();
+            DeleteBookByID();
         }
-
-        void deleteBookByID()
+        void DeleteBookByID()
         {
-            if (checkIfBookExists())
+            if (CheckIfBookExists())
             {
                 try
                 {
@@ -76,15 +69,14 @@ namespace WebApplication1
                 Response.Write("<script>alert('Nieprawidłowe ID użytkownika');</script>");
             }
         }
-
-        void updateBookByID()
+        void UpdateBookByID()
         {
-            if (checkIfBookExists())
+            if (CheckIfBookExists())
             {
                 try
                 {
-                    int actualStock = Convert.ToInt32(TextBox9.Text.Trim());
-                    int currentStock = Convert.ToInt32(TextBox10.Text.Trim());
+                    var actualStock = Convert.ToInt32(TextBox9.Text.Trim());
+                    var currentStock = Convert.ToInt32(TextBox10.Text.Trim());
                     if (globalActualStock == actualStock)
                     {
 
@@ -108,8 +100,8 @@ namespace WebApplication1
                     }
                     genres = genres.Remove(genres.Length - 1);
 
-                    string filepath = "~/book_inventory/books1";
-                    string filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
+                    var filepath = "~/book_inventory/books1";
+                    var filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
                     if (filename == "" || filename == null)
                     {
                         filepath = globalFilepath;
@@ -125,12 +117,10 @@ namespace WebApplication1
                     {
                         con.Open();
                     }
-
                     SqlCommand cmd = new SqlCommand("UPDATE book_master_tbl SET book_name=@book_name,genre=@genre," +
                     "author_name=@author_name,publisher_name=@publisher_name,publish_date=@publish_date,language=@language,edition=@edition," +
                     "book_cost=@book_cost,no_of_pages=@no_of_pages,book_description=@book_description,actual_stock=@actual_stock," +
                     "current_stock=@current_stock,book_img_link=@book_img_link WHERE book_id='" + TextBox3.Text.Trim() + "'", con);
-
                     cmd.Parameters.AddWithValue("@book_name", TextBox4.Text.Trim());
                     cmd.Parameters.AddWithValue("@genre", genres);
                     cmd.Parameters.AddWithValue("@author_name", DropDownList3.SelectedItem.Value);
@@ -144,12 +134,10 @@ namespace WebApplication1
                     cmd.Parameters.AddWithValue("@actual_stock", actualStock.ToString());
                     cmd.Parameters.AddWithValue("@current_stock", currentStock.ToString());
                     cmd.Parameters.AddWithValue("@book_img_link", filepath);
-
                     cmd.ExecuteNonQuery();
                     con.Close();
                     GridView1.DataBind();
                     Response.Write("<script>alert('Książka została zaktualizowana');</script>");
-
                 }
                 catch (Exception ex)
                 {
@@ -161,8 +149,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('Nieprawidłowe ID książki');</script>");
             }
         }
-
-        void getBookByID()
+        void GetBookByID()
         {
             try
             {
@@ -175,7 +162,6 @@ namespace WebApplication1
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-
                 if (dt.Rows.Count >= 1)
                 {
                     TextBox4.Text = dt.Rows[0]["book_name"].ToString();
@@ -190,11 +176,9 @@ namespace WebApplication1
                     TextBox10.Text = dt.Rows[0]["current_stock"].ToString().Trim();
                     TextBox12.Text = dt.Rows[0]["book_description"].ToString();
                     TextBox11.Text = "" + (Convert.ToInt32(dt.Rows[0]["actual_stock"].ToString()) - Convert.ToInt32(dt.Rows[0]["current_stock"].ToString()));
-
                     ListBox1.ClearSelection();
 
                     string[] genre = dt.Rows[0]["genre"].ToString().Trim().Split(',');
-
                     for (int i = 0; i < genre.Length; i++)
                     {
                         for (int j = 0; j < ListBox1.Items.Count; j++)
@@ -203,10 +187,8 @@ namespace WebApplication1
                             {
                                 ListBox1.Items[j].Selected = true;
                             }
-
                         }
                     }
-
                     globalActualStock = Convert.ToInt32(dt.Rows[0]["actual_stock"].ToString().Trim());
                     globalCurrentStock = Convert.ToInt32(dt.Rows[0]["current_stock"].ToString().Trim());
                     globalIssuedBooks = globalActualStock - globalCurrentStock;
@@ -222,8 +204,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        void fillAuthorPublisherValues()
+        void FillAuthorPublisherValues()
         {
             try
             {
@@ -236,7 +217,6 @@ namespace WebApplication1
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-
                 DropDownList3.DataSource = dt;
                 DropDownList3.DataValueField = "author_name";
                 DropDownList3.DataBind();
@@ -245,7 +225,6 @@ namespace WebApplication1
                 da = new SqlDataAdapter(cmd);
                 dt = new DataTable();
                 da.Fill(dt);
-
                 DropDownList2.DataSource = dt;
                 DropDownList2.DataValueField = "publisher_name";
                 DropDownList2.DataBind();
@@ -255,8 +234,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        bool checkIfBookExists()
+        bool CheckIfBookExists()
         {
             try
             {
@@ -265,12 +243,10 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM book_master_tbl WHERE book_id='" + TextBox3.Text.Trim() + "' OR book_name ='" + TextBox4.Text.Trim() + "'", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-
                 if (dt.Rows.Count >= 1)
                 {
                     return true;
@@ -286,7 +262,7 @@ namespace WebApplication1
                 return false;
             }
         }
-        void addNewBook()
+        void AddNewBook()
         {
             try
             {
@@ -297,8 +273,8 @@ namespace WebApplication1
                 }
                 genres = genres.Remove(genres.Length - 1);
 
-                string filepath = "~/book_inventory/books1.png";
-                string filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
+                var filepath = "~/book_inventory/books1.png";
+                var filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
                 FileUpload1.SaveAs(Server.MapPath("book_inventory/" + filename));
                 filepath = "~/book_inventory/" + filename;
 
@@ -310,7 +286,6 @@ namespace WebApplication1
                 SqlCommand cmd = new SqlCommand("INSERT INTO book_master_tbl (book_id,book_name,genre,author_name,publisher_name,publish_date,language,edition,book_cost," +
                     "no_of_pages,book_description,actual_stock,current_stock,book_img_link) VALUES(@book_id,@book_name,@genre,@author_name,@publisher_name,@publish_date," +
                     "@language,@edition,@book_cost,@no_of_pages,@book_description,@actual_stock,@current_stock,@book_img_link)", con);
-
                 cmd.Parameters.AddWithValue("@book_id", TextBox3.Text.Trim());
                 cmd.Parameters.AddWithValue("@book_name", TextBox4.Text.Trim());
                 cmd.Parameters.AddWithValue("@genre", genres);
@@ -325,7 +300,6 @@ namespace WebApplication1
                 cmd.Parameters.AddWithValue("@actual_stock", TextBox9.Text.Trim());
                 cmd.Parameters.AddWithValue("@current_stock", TextBox9.Text.Trim());
                 cmd.Parameters.AddWithValue("@book_img_link", filepath);
-
                 cmd.ExecuteNonQuery();
                 con.Close();
                 Response.Write("<script>alert('Książka została dodana');</script>");

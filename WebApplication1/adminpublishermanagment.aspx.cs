@@ -7,31 +7,28 @@ namespace WebApplication1
 {
     public partial class adminpublishermanagment : System.Web.UI.Page
     {
-
         string strcon = ConfigurationManager.ConnectionStrings["con"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             GridView1.DataBind();
         }
-
         protected void Button2_Click(object sender, EventArgs e)
         {
-            if (checkIfPublisherExist())
+            if (CheckIfPublisherExist())
             {
                 Response.Write("<script>alert('Wydawnictwo z takim ID już istnieje. Nie można dodać kolejnego wydawnictwa z takim samym ID');</script>");
             }
             else
             {
-                addNewPublisher();
+                AddNewPublisher();
             }
         }
-
         protected void Button3_Click(object sender, EventArgs e)
         {
-            if (checkIfPublisherExist())
+            if (CheckIfPublisherExist())
             {
-                updatePublisher();
+                UpdatePublisher();
             }
             else
             {
@@ -40,22 +37,20 @@ namespace WebApplication1
         }
         protected void Button4_Click(object sender, EventArgs e)
         {
-            if (checkIfPublisherExist())
+            if (CheckIfPublisherExist())
             {
-                deletePublisher();
+                DeletePublisher();
             }
             else
             {
                 Response.Write("<script>alert('Wydawnictwo z takim ID nie istnieje');</script>");
             }
-
         }
         protected void Button1_Click(object sender, EventArgs e)
         {
-            getPublisherByID();
+            GetPublisherByID();
         }
-
-        bool checkIfPublisherExist()
+        bool CheckIfPublisherExist()
         {
             try
             {
@@ -83,7 +78,7 @@ namespace WebApplication1
                 return false;
             }
         }
-        void getPublisherByID()
+        void GetPublisherByID()
         {
             try
             {
@@ -110,7 +105,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-        void updatePublisher()
+        void UpdatePublisher()
         {
             try
             {
@@ -132,7 +127,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-        void deletePublisher()
+        void DeletePublisher()
         {
             try
             {
@@ -153,7 +148,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-        void addNewPublisher()
+        void AddNewPublisher()
         {
             try
             {

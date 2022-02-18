@@ -12,35 +12,29 @@ namespace WebApplication1
         {
             GridView1.DataBind();
         }
-
         protected void LinkButton4_Click(object sender, EventArgs e)
         {
-            getMemberByID();
+            GetMemberByID();
         }
-
         protected void LinkButton1_Click(object sender, EventArgs e)
         {
-            updateMemberID("aktywny");
+            UpdateMemberID("aktywny");
         }
-
         protected void LinkButton2_Click(object sender, EventArgs e)
         {
-            updateMemberID("oczekujący");
+            UpdateMemberID("oczekujący");
         }
-
         protected void LinkButton3_Click(object sender, EventArgs e)
         {
-            updateMemberID("nieaktywny");
+            UpdateMemberID("nieaktywny");
         }
-
         protected void Button2_Click(object sender, EventArgs e)
         {
-            deleteMemberByID();
+            DeleteMemberByID();
         }
-
-        void deleteMemberByID()
+        void DeleteMemberByID()
         {
-            if (checkIfMemberExists())
+            if (CheckIfMemberExists())
             {
                 try
                 {
@@ -49,12 +43,11 @@ namespace WebApplication1
                     {
                         con.Open();
                     }
-
                     SqlCommand cmd = new SqlCommand("DELETE from member_master_tbl WHERE member_id ='" + TextBox3.Text.Trim() + "'", con);
                     cmd.ExecuteNonQuery();
                     con.Close();
                     Response.Write("<script>alert('Użytkownik został usunięty');</script>");
-                    clearForm();
+                    ClearForm();
                     GridView1.DataBind();
                 }
                 catch (Exception ex)
@@ -67,8 +60,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('Nieprawidłowe ID użytkownika');</script>");
             }
         }
-
-        void clearForm()
+        void ClearForm()
         {
             TextBox3.Text = "";
             TextBox4.Text = "";
@@ -81,8 +73,7 @@ namespace WebApplication1
             TextBox11.Text = "";
             TextBox12.Text = "";
         }
-
-        void getMemberByID()
+        void GetMemberByID()
         {
             try
             {
@@ -91,7 +82,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM member_master_tbl WHERE member_id='" + TextBox3.Text.Trim() + "'", con);
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
@@ -113,17 +103,15 @@ namespace WebApplication1
                 {
                     Response.Write("<script>alert('Nieprawidłowe ID użytkownika');</script>");
                 }
-
             }
             catch (Exception ex)
             {
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
-        void updateMemberID(string status)
+        void UpdateMemberID(string status)
         {
-            if (checkIfMemberExists())
+            if (CheckIfMemberExists())
             {
                 try
                 {
@@ -132,7 +120,6 @@ namespace WebApplication1
                     {
                         con.Open();
                     }
-
                     SqlCommand cmd = new SqlCommand("UPDATE member_master_tbl SET account_status='" + status + "' WHERE member_id='" + TextBox3.Text.Trim() + "'", con);
                     cmd.ExecuteNonQuery();
                     con.Close();
@@ -149,8 +136,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('Nieprawidłowe ID użytkownika');</script>");
             }
         }
-
-        bool checkIfMemberExists()
+        bool CheckIfMemberExists()
         {
             try
             {
@@ -163,7 +149,6 @@ namespace WebApplication1
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-
                 if (dt.Rows.Count >= 1)
                 {
                     return true;

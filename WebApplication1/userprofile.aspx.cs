@@ -21,10 +21,10 @@ namespace WebApplication1
                 }
                 else
                 {
-                    getUserBookData();
+                    GetUserBookData();
                     if (!Page.IsPostBack)
                     {
-                        getUserPersonalDetails();
+                        GetUserPersonalDetails();
                     }
                 }
             }
@@ -33,7 +33,6 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-
         protected void Button1_Click1(object sender, EventArgs e)
         {
             if (Session["username"].ToString() == "" || Session["username"].ToString() == null)
@@ -43,11 +42,10 @@ namespace WebApplication1
             }
             else
             {
-                updateUserPersonalDetails();
+                UpdateUserPersonalDetails();
             }
         }
-
-        void updateUserPersonalDetails()
+        void UpdateUserPersonalDetails()
         {
             try
             {
@@ -65,7 +63,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("UPDATE member_master_tbl SET full_name=@full_name,dob=@dob,contact_no=@contact_no,email=@email,state=@state,city=@city," +
                     "pincode=@pincode,full_address=@full_address,password=@password,account_status=@account_status WHERE member_id='" + Session["username"].ToString().Trim() + "'", con);
                 cmd.Parameters.AddWithValue("@full_name", TextBox3.Text.Trim());
@@ -78,14 +75,13 @@ namespace WebApplication1
                 cmd.Parameters.AddWithValue("@full_address", TextBox7.Text.Trim());
                 cmd.Parameters.AddWithValue("@password", password);
                 cmd.Parameters.AddWithValue("@account_status", "oczekujący");
-
-                int result = cmd.ExecuteNonQuery();
+                var result = cmd.ExecuteNonQuery();
                 con.Close();
                 if (result > 0)
                 {
                     Response.Write("<script>alert('Twoje dane zostały zaktualizowane');</script>");
-                    getUserPersonalDetails();
-                    getUserBookData();
+                    GetUserPersonalDetails();
+                    GetUserBookData();
                 }
                 else
                 {
@@ -98,7 +94,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-        void getUserPersonalDetails()
+        void GetUserPersonalDetails()
         {
             try
             {
@@ -107,7 +103,6 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM member_master_tbl WHERE member_id='" + Session["username"].ToString() + "'", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -123,7 +118,6 @@ namespace WebApplication1
                 TextBox1.Text = dt.Rows[0]["member_id"].ToString();
                 TextBox2.Text = dt.Rows[0]["password"].ToString();
                 TextBox3.Text = dt.Rows[0]["full_name"].ToString();
-
                 Label1.Text = dt.Rows[0]["account_status"].ToString().Trim();
                 if (dt.Rows[0]["account_status"].ToString().Trim() == "aktywny")
                 {
@@ -147,7 +141,7 @@ namespace WebApplication1
                 Response.Write("<script>alert('" + ex.Message + "');</script>");
             }
         }
-        void getUserBookData()
+        void GetUserBookData()
         {
             try
             {
@@ -156,12 +150,10 @@ namespace WebApplication1
                 {
                     con.Open();
                 }
-
                 SqlCommand cmd = new SqlCommand("SELECT * FROM book_issue_tbl WHERE member_id='" + Session["username"].ToString() + "'", con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-
                 GridView1.DataSource = dt;
                 GridView1.Dispose();
                 GridView1.DataBind();
@@ -176,7 +168,6 @@ namespace WebApplication1
                 SqlDataAdapter da2 = new SqlDataAdapter(cmd2);
                 DataTable dt2 = new DataTable();
                 da2.Fill(dt2);
-
                 GridView2.DataSource = dt2;
                 GridView2.Dispose();
                 GridView2.DataBind();
@@ -193,8 +184,8 @@ namespace WebApplication1
             {
                 if (e.Row.RowType == DataControlRowType.DataRow)
                 {
-                    DateTime dt = Convert.ToDateTime(e.Row.Cells[5].Text);
-                    DateTime today = DateTime.Today;
+                    var dt = Convert.ToDateTime(e.Row.Cells[5].Text);
+                    var today = DateTime.Today;
                     if (today > dt)
                     {
                         e.Row.BackColor = System.Drawing.Color.PaleVioletRed;

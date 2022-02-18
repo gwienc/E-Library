@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="adminauthormanagment.aspx.cs" Inherits="WebApplication1.adminautormanagment" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="Adminauthormanagment.aspx.cs" Inherits="WebApplication1.adminautormanagment" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript">
@@ -49,7 +49,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-4">
                                 <asp:Button class="btn btn-lg btn-block btn-primary" ID="Button2" runat="server" Text="Dodaj" OnClick="Button2_Click" />
@@ -66,7 +65,6 @@
                 <a href="homepage.aspx"><< Powrót na stronę główną</a><br />
                 <br />
             </div>
-
             <div class="col-md-7 pb-5">
                 <div class="card shadow-lg">
                     <div class="card-body">
@@ -97,7 +95,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </asp:Content>
